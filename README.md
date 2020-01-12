@@ -1,6 +1,6 @@
 # Tree Visualizer
 
-Simple visualizer designed for CS61A's implementation of the Tree data-type using Python3 and the graphics.py library written by John Zelle.   
+Simple visualizer designed for CS61A's implementation of the Tree datatype using Python3 and an online graphics library.
 
 ![Tree Visualizer Demo](demo.gif)
 
