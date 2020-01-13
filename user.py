@@ -1,27 +1,47 @@
 from draw import *
+import random
 
-example = Tree(0, [Tree(0, [Tree(9), Tree(5, [Tree(0, [Tree(9), Tree(5, [Tree(1), Tree(2), Tree(3), Tree(4)]), Tree(7), Tree(6)])]), 
-	 Tree(7), Tree(6), Tree(10)]), Tree(0, [Tree(9, [Tree(0, [Tree(9, [Tree(0, [Tree(9, [Tree(1, [Tree(0), Tree(2), Tree(4), Tree(6), Tree(8), Tree(10), Tree(12)])]), 
-	 Tree(5), Tree(5)])]), Tree(5), Tree(5)])]), Tree(5), Tree(5)]), Tree(1, [Tree(4), Tree(5, [Tree(2, [Tree(5, [Tree(0, [Tree(9), Tree(5, [Tree(1), Tree(2), Tree(3), 
-	 Tree(4)]), Tree(7), Tree(6)])]), Tree(7), Tree(6), Tree(10, [Tree(6), Tree(2)]), Tree(11)])]), Tree(6), Tree(9, [Tree(12, [Tree(13), Tree(14, [Tree(16), Tree(24), 
-	 Tree(17, [Tree(4), Tree(5, [Tree(7), Tree(9)])])])])])])])
+def make_tree(n, max_branches=4):
+	'''
+	Returns a Tree object with 'n' nodes and at most max_branches branches per node. Labels are integers.
 
-#reassign tree to any tree you want to draw
-tree = example
+	Entering a large 'n' (around 35 or greater) or a large 'max_branches' (around 7 or greater) will likely
+	result in error since the tree will not fit on the window.     
+	'''
+	assert n > 0, 'A Tree must have at least 1 node.'
+	assert max_branches > 0, 'Cannot have max_branches <= 0.'
+	
+	t = Tree(n)
+	n = n - 1
+	d = {0: [t]}
+	level = 1	
+	
+	while n > 0:
+		d[level] = []
+		for tree in d[level - 1]:
+			i = max_branches - random.randint(0, max_branches)
+			while i < max_branches or d[level] == []:
+				i = i + 1
+				a = Tree(n)
+				tree.branches.append(a)
+				d[level].append(a)
+				n = n - 1
+				if n <= 0:
+					break
+			if n <= 0:
+				break
+		level += 1
 
-'''
-DON'T CHANGE ANY OF THE SETTING CODE
-'''
-set_parents(tree)
-set_levels(tree)
-set_repr_occurrences(tree)
-set_coords(tree, width*0.5, height*0.75, radius, h_offset, v_offset)			
-set_circles(tree, radius)
-set_texts(tree)
+	return t
+
+#reassign tree to any tree you want to draw, or use make_tree() to create a random tree 
+tree = make_tree(12)
+
+#DO NOT CHANGE THIS LINE
+set_all(tree, width, height, radius, h_offset, v_offset)
 
 #set animate to True if you want to see the tree drawn step-by-step
-#set draw_with_error to True if you want to draw the tree even if it goes beyond the screen or there is overlap of text and nodes
-visualize(tree, animate=True, draw_with_error=False)
+visualize(tree, animate=True)
 
 
 						

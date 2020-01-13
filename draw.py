@@ -3,17 +3,11 @@ from trees import *
 width, height = 1280, 640
 radius = 16
 h_offset = 16
-v_offset = -48
+v_offset = -64
 window = GraphWin("Tree Visualizer", width, height, autoflush=False)
 window.setCoords(0, 0, width, height)
 
-class WinsizeError(Exception):
-	'''
-	Handles errors when the tree or repr's visual representation does not fit the window.
-	'''
-	pass
-
-def visualize(tree, animate=False, draw_with_error=False):
+def visualize(tree, animate=False):
 	'''
 	Provide the full visualization of the tree and its __repr__. Can highlight both the circular nodes
 	and their corresponding __repr__()'s by clicking.
@@ -25,8 +19,6 @@ def visualize(tree, animate=False, draw_with_error=False):
 		ensuring the line does not cross into either circle. 
 		'''
 		t.circle.draw(window)
-		if len(str(t.label)) > 4:
-			raise WinsizeError("Label does not fit inside node")
 		t.text.draw(window)
 		
 		if t.parent:
@@ -75,6 +67,8 @@ def visualize(tree, animate=False, draw_with_error=False):
 				if px_start > px_end:
 					px_start = (width - max_ppr)/ 2
 					y -= 16
+					if y - t.y <= 16:
+						raise WinsizeError("Repr overlaps with Tree")
 
 		draw_baserepr(tree.__repr__())
 
@@ -119,32 +113,9 @@ def visualize(tree, animate=False, draw_with_error=False):
 						copy = copy.replace(substring, ' '*len(substring), 1)
 					occurrence += 1
 
-		def check_winsize(t, d):
-			'''
-			Check if either visual representation does not fit properly on the window and
-			throw an error if they do. These errors will be ignored later if draw_with_error is True.
-			'''
-			def tree_too_big(t):
-				if t.x - 16 <= 0 or t.x + 16 >= width or t.y - 16 <= 0:
-					raise WinsizeError("Tree is too big to fit on window.")
-				for b in t.branches:
-					tree_too_big(b)
-			
-			def repr_too_big(d):
-				if d[max(d.keys())].getAnchor().getY() - t.y <= 16:
-					raise WinsizeError("Repr overlaps with Tree")
-
-			tree_too_big(t)
-			repr_too_big(d)
-
 		d = draw_repr(tree)
-		
-		if not draw_with_error:
-			check_winsize(tree, d)
-		
 		if animate:
 			window.autoflush = True
-		
 		draw_tree(tree)
 		window.autoflush = False
 
