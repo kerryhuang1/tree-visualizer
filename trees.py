@@ -177,11 +177,12 @@ def set_all(vtree, width, height, radius, h_offset, v_offset):
 
             parent_index = layers[row_index - 1].index(parent)
 
-            for i in range(tree_index + 1):
-                layers[row_index][i].x -= dist
+            if len(layers[row_index]) > 1:
+                for i in range(tree_index + 1):
+                    layers[row_index][i].x -= dist
 
-            for i in range(tree_index + 1, len(layers[row_index])):
-                layers[row_index][i].x += dist
+                for i in range(tree_index + 1, len(layers[row_index])):
+                    layers[row_index][i].x += dist
 
             shift_tree_left(row_index - 1, parent_index, dist)
 
